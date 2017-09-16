@@ -4,7 +4,7 @@
     <mu-paper style="width: 100%; position: fixed;bottom: 0;">
     <mu-bottom-nav :value="bottomNav" shift @change="handleChange">
       <mu-bottom-nav-item to='test' value="movies" title="Movies" icon="ondemand_video"/>
-      <mu-bottom-nav-item value="music" title="Music" icon="music_note"/>
+      <mu-bottom-nav-item to='music' value="music" title="Music" icon="music_note"/>
       <mu-bottom-nav-item value="books" title="Books" icon="books"/>
       <mu-bottom-nav-item value="pictures" title="Pictures" icon="photo"/>
     </mu-bottom-nav>

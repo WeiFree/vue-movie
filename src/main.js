@@ -10,7 +10,8 @@ import axios from 'axios'
 Vue.use(MuseUI)
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
- 
+ /*全局常量*/
+global.API_PROXY = 'https://bird.ioliu.cn/v1/?url='                    // 线上代理地址
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

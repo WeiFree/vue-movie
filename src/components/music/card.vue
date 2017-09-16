@@ -2,17 +2,17 @@
 <div class="wrap">
 	
 	 <mu-row class='paper-row'>
-      <mu-col class='paper-elem' width="50" tablet="25" desktop="20" v-for="subject in data" :key="subject.id">
-        <router-link :to="{name: 'MovieSubject', params:{id: subject.id}}">
+      <mu-col class='paper-elem' width="50" tablet="25" desktop="20" v-for="subject in data" :key="subject.album.id">
+        <router-link :to="{name: 'MusicSubject', params:{id: subject.album.id}}">
           <mu-paper>
             <div class='paper-border'>
-              <div class='paper-img' :style="'background-image: url('+subject.images.large+')'">
+              <div class='paper-img' :style="'background-image: url('+subject.album.picUrl+')'">
               </div>
             </div>
             <div class='paper-text'>
-              <p>{{subject.title}}</p>
+              <p>{{subject.album.name}}</p>
               <p class="star-box">
-               <span class='paper-rating'>豆瓣评分：{{subject.rating.average}} </span>
+               <span class='paper-rating'>歌手：{{subject.artists[0].name}} </span>
               </p>
             </div>
           </mu-paper>
@@ -36,11 +36,11 @@
     },
 	methods:{
 		loadData(){
-            this.$axios.get('/api/movie/top250')
+            this.$axios.get(API_PROXY+'http://music.163.com/api/playlist/detail?id=3779629')
                 .then((response) => {
                     // success
-                     this.data = response.data.subjects
-                   
+                     this.data = response.data.result.tracks
+                    
 //                  return this.data
                 })
                 .catch((error) => {
