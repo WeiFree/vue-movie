@@ -1,6 +1,6 @@
 <template>
 <div class="wrap">
-	<mu-linear-progress v-if='i=0' />
+	
 	 <mu-row class='paper-row'>
       <mu-col class='paper-elem' width="50" tablet="25" desktop="20" v-for="subject in data" :key="subject.id">
         <router-link :to="{name: 'subject', params:{id: subject.id}}">
@@ -14,18 +14,12 @@
               <p class="star-box">
                <span class='paper-rating'>豆瓣评分：{{subject.rating.average}} </span>
               </p>
-            </div>                                                                            
+            </div>
           </mu-paper>
         </router-link>
       </mu-col>
     </mu-row>
-    <div >
-	 <mu-pagination :total="total" :current="current" @pageChange="handleClick">
-  </mu-pagination>
 </div>
-</div>
-
-
 </template>
 
 <script>
@@ -34,10 +28,7 @@
 		
 		data(){
 			return{
-				data:[],
-				total: 125,
-      			current: 1,
-      			
+				data:[]
 			}
 		},
 		mounted() {
@@ -45,38 +36,17 @@
     },
 	methods:{
 		loadData(){
-            this.$axios.get('/api/movie/top250')
+            this.$axios.get('/api/movie/coming_soon')
                 .then((response) => {
                     // success
                      this.data = response.data.subjects
-                   
 //                  return this.data
                 })
                 .catch((error) => {
                     //error
                     console.log(error);
                 })
- 		 },
- 		  handleClick (newIndex) {
- 		  	window.scrollTo(0,0)
- 		  	if(newIndex==1){
- 		  		this.loadData()
- 		  	}
- 		  	else{
- 		  		this.$axios.get('/api/movie/top250?start='+newIndex*10)
-                .then((response) => {
-                    // success
-                     this.data = response.data.subjects
-                 
-//                  return this.data
-                })
-                .catch((error) => {
-                    //error
-                    console.log(error);
-                })	
- 		  	}  	 
-    }
- 		  
+ 		 }
 	}
 	}
 </script>
