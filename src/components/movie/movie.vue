@@ -42,7 +42,7 @@ export default {
       this.activeTab = val
     },
     flex(){    
-    	this.scroll = document.documentElement.scrollTop || document.body.scrollTop;;
+    	this.scroll = document.documentElement.scrollTop || document.body.scrollTop;
     	if(this.scroll>30){
     		document.getElementsByClassName('mu-tabs')[0].style.position='fixed'
     	}else{
@@ -51,7 +51,7 @@ export default {
     	
     }
     },
-    mounted(){
+    created(){
     	window.addEventListener('scroll',this.flex)
     }
   }

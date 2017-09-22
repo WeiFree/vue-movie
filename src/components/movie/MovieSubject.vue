@@ -16,8 +16,7 @@
     </div>
  <div class="star">
       <Star :rating="movie.rating.average"></Star>
-    </div>
-
+ </div>
     <div class="info">
       <p class="info-content"><span class="info-title">原名:</span><span class="info-text">{{movie.original_title}}</span></p>
       <p class="info-content"><span class="info-title">类型:</span><span class="info-text">{{movie.genres}}</span></p>
@@ -59,10 +58,8 @@
             </div>
           </mu-paper>
         </mu-col>
-
       </mu-row>
     </div>
-
   </div>
 </template>
 
@@ -119,7 +116,6 @@
    		 this.$axios.get('/api/movie/subject/'+this.$route.params.id)
                 .then((response) => {
                     // success
-                    
                      this.movie = response.data
                    	console.log(response)
 //                  return this.data
