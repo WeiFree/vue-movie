@@ -48,7 +48,6 @@ export default {
     	}else{
     		document.getElementsByClassName('mu-tabs')[0].style.position='relative'
     	}
-    	
     }
     },
     created(){

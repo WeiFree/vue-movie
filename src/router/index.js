@@ -4,7 +4,7 @@ import Hello from '@/components/Hello'
 import test from '@/components/movie/movie'
 import music from '@/components/music/card'
 import subject from '@/components/movie/MovieSubject'
-
+import play from '@/components/music/play'
 Vue.use(Router)
 
 export default new Router({
@@ -27,6 +27,10 @@ export default new Router({
     	path:'/subject/:id',
     	name:'subject',
     	component:subject,
+    },{
+    	path:'/play/:id',
+    	name:'play',
+    	component:play
     }
   ]
 })

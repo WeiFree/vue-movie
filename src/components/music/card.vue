@@ -1,9 +1,8 @@
 <template>
 <div class="wrap">
-	
 	 <mu-row class='paper-row'>
       <mu-col class='paper-elem' width="50" tablet="25" desktop="20" v-for="subject in data" :key="subject.album.id">
-        <router-link :to="{name: 'MusicSubject', params:{id: subject.album.id}}">
+        <router-link :to="{name: 'play', params:{id: subject.id}}">
           <mu-paper>
             <div class='paper-border'>
               <div class='paper-img' :style="'background-image: url('+subject.album.picUrl+')'">
@@ -14,7 +13,7 @@
               <p class="star-box">
                <span class='paper-rating'>歌手：{{subject.artists[0].name}} </span>
               </p>
-            </div>
+            </div> 
           </mu-paper>
         </router-link>
       </mu-col>
@@ -36,19 +35,21 @@
     },
 	methods:{
 		loadData(){
-            this.$axios.get(API_PROXY+'http://music.163.com/api/playlist/detail?id=3779629')
+            this.$axios.get(API_PROXY+'http://musicapi.leanapp.cn/top/list?idx=3')
                 .then((response) => {
                     // success
                      this.data = response.data.result.tracks
-                    
+                    console.log(response.data.result.tracks)
 //                  return this.data
                 })
                 .catch((error) => {
                     //error
                     console.log(error);
                 })
- 		 }
-	}
+ 		}
+ 		
+ 		}
+	
 	}
 </script>
 

@@ -1,4 +1,3 @@
-
 <template>
   <span class='star'>
     <mu-icon class='star-icon' value="star" v-for="n in ratingObj.star" :key="'star'+n"/>
