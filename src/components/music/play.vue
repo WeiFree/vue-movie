@@ -1,33 +1,34 @@
 <template>
 	
-<div id="warp" style="position: relative;height: 100%;overflow: hidden;">
+<div id="warp" style="position: relative;height: 100%;overflow: hidden;" >
 	<div class="title">
 		<mu-icon-button class='icon-back' icon='arrow_back' slot="left"  @click='goBack()' />
 		<h1>{{music[0].name}}--<small>{{music[0].ar[0].name}}</small></h1>
 	</div>	
-	<div class="bg" ></div>
-	 <mu-paper class="paper" circle :zDepth="3" :style="'background-image: url('+music[0].al.picUrl+')'" />
+	<div class="bg"  :style="'background-image: url('+music[0].al.picUrl+')'"></div>
+	 <div class="paper" :class="{'start':playing,'':!playing}"  :style="'background-image: url('+music[0].al.picUrl+')'">
+	 	<span id="">
+	 		
+	 	</span>
+	 </div>
 	<div class="control">
 		<div class="jindu">
 				<span id="music-bar">
 					<span id="load-bar"></span>
 					<span id="played-bar"></span>
 				</span>
-				<span id="voice-bar">
-					<span id="voiced-bar"></span>
-				</span>
 				<div id="time">
 					<span id="current-time">0:00</span>
-					<span id="total-time"></span>
+					<span id="total-time">{{totalTime}}</span>
 				</div>
 			</div>
 			<div class="controls">
 				<a id="xunhuan" href="javascript:;">循环</a>
-				<a id="play" href="javascript:;">Play</a>
+				<a id="play" @click="playMusic()" href="javascript:;">Play</a>
 				<a id="jingyin" href="javascript:;">静音</a>
 			</div>
 	</div>
-	<audio id="audio">
+	<audio id="audio" autoplay="autoplay" controls="controls">
 			<source :title="music.name" :data-img="music[0].al.picUrl" :src="musicUrl.data[0].url">
 		</audio>
 </div>
@@ -39,13 +40,16 @@
 		name:'play',
 		data(){
 			return{
+				totalTime:0,
+				playing:true,
 				music:[],
 				musicurl:[]
 			}
 		},
-		mounted() {
+		mounted() {	
       this.loadData();
-      this.loadUrl()
+      this.loadUrl();
+      this.playMusic()
     },
 		methods:{
 			goBack(){
@@ -63,9 +67,7 @@
                     //error
                     console.log(error);
                 })
-   	},
-   	loadUrl(){
-   		this.$axios.get(API_PROXY+'http://musicapi.leanapp.cn/music/url?id='+this.$route.params.id)
+                this.$axios.get(API_PROXY+'http://musicapi.leanapp.cn/music/url?id='+this.$route.params.id)
                 .then((response) => {
                     // success
                      this.musicUrl = response.data
@@ -76,9 +78,25 @@
                     //error
                     console.log(error);
                 })
+   	},
+   	loadUrl(){
+   		
+   	},
+   	playMusic(){
+   		var  audio=document.getElementById("audio")
+		this.totalTime=(audio.duration)/60;
+   		if(this.playing){
+   			audio.pause()
+   			return this.playing=false,this.totalTime;
+   		}else{
+   			audio.play()
+   		
+   			console.log()
+   			return this.playing=true,this.totalTime;
+   		}
    	}
-		}
 	}
+}
 </script>
 
 <style>
@@ -89,34 +107,38 @@
 	 background: -webkit-linear-gradient(left, #7E898F 0%, #636C75 100%), -webkit-radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.55) 100%), -webkit-radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.08) 63%);
   background: linear-gradient(90deg, #7E898F 0%, #636C75 100%), radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.55) 100%), radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.08) 63%);
   background-blend-mode: multiply, screen; 
+    color: white;
 	}
 	.title {
 	height:6%;
 	width: 100%;
 	text-align: center;
 	line-height: 100%;
-	border-bottom: 1px solid #fec514;
-	
+	border-bottom: 1px solid #b7b7b7;
+	position: relative;
+	z-index: 99;
 }
 .title h1 {
 	font-size: 7vw;
 	font-weight: 100;
-	color:#AAAAAA;
+	color:#FFFFFF;
 }
 	.bg{
 		
-		margin: 0 auto;
-		height: 75%;
+		margin: -18% auto;
+		height: 85%;
 		width: 100%;
 		/*background-image: url(./sprite-sheet.png);*/
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
-        /*-webkit-filter: blur(5px);*/
-        /*-moz-filter: blur(5px);*/
-        /*-o-filter: blur(5px);*/
-        /*-ms-filter: blur(5px);*/
-        /*filter: blur(5px);模糊滤镜*/
+        background-color: rgba(255,255,255,0.0);
+        -webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+        -o-filter: blur(5px);
+        -ms-filter: blur(5px);
+        filter: blur(5px);
+        /*//模糊滤镜*/
 	}
 	.paper{
 		background-color: white;
@@ -124,13 +146,32 @@
 		 background-repeat: no-repeat;
         background-position: center;
         background-size: cover; 
-		width: 55%;
-		height: 30%;
+        width: 80%;
+        height: 0;
+        padding-top: 80%;
+        border-radius: 50%;
 		position: absolute;
 		left: 48%;
 		top: 45%;
-		margin-top: -25%;
-		margin-left: -25%;
+		border: 5px solid rgba(255,255,255,0.7);
+		margin-top: -37%;
+		margin-left: -37%;
+		animation-play-state:paused;
+	}
+	.paper:before{
+		width: 20%;
+		height: 20%;
+		border-radius: 50%;
+		background: -webkit-linear-gradient(left, #7E898F 0%, #636C75 100%), -webkit-radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.55) 100%), -webkit-radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.08) 63%);
+		background: linear-gradient(90deg, #7E898F 0%, #636C75 100%), radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.55) 100%), radial-gradient(at top, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.08) 63%);
+ 		background-blend-mode: multiply, screen; 
+		content: " ";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -10%;
+		margin-left: -10%;
+		border: 5px solid rgba(255,255,255,0.4);
 	}
 	.icon-back{
 		 position: absolute;
@@ -273,6 +314,26 @@
 	    left: 0;
 	    width: 100%;
 	}
+}
+.start{
+	animation:loadRotate 13s linear infinite;
+	-webkit-animation:loadRotate 13s linear infinite;
+}
+@-webkit-keyframes loadRotate{
+  from{
+    -webkit-transform:rotateZ(0deg);
+  }
+  to{
+    -webkit-transform:rotateZ(360deg);
+  }
+}
+@keyframes loadRotate{
+  from{
+    transform:rotateZ(0deg);
+  }
+  to{
+    transform:rotateZ(360deg);
+  }
 }
 
 </style>

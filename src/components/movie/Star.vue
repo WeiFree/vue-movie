@@ -15,7 +15,6 @@
         const star = Math.floor(intNum / 2);
         const half = intNum % 2;
         const left = 5 - star - half;
-        console.log(this.rating, star, half, left);
         return {
           star,
           half,
