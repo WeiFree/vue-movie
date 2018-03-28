@@ -39,7 +39,6 @@
                 .then((response) => {
                     // success
                      this.data = response.data.result.tracks
-                    console.log(response.data.result.tracks)
 //                  return this.data
                 })
                 .catch((error) => {
@@ -115,10 +114,8 @@
 }
 .paper-star{
   margin-right: 3px;
-  /*font-size: 12px;*/
 }
 .paper-rating{
   position: relative;
-  /*top: -2px;*/
 }
 </style>

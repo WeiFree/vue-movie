@@ -5,8 +5,8 @@
 		<mu-icon-button class='icon-back' icon='arrow_back' slot="left"  @click='goBack()' />
 		<h1>{{music[0].name}}--<small>{{music[0].ar[0].name}}</small></h1>
 	</div>	
-	<div class="bg"  :style="'background-image: url('+music[0].al.picUrl+')'"></div>
-	 <div class="paper" :class="{'start':playing,'':!playing}"  :style="'background-image: url('+music[0].al.picUrl+')'">
+	<div class="bg" ></div>
+	 <div class="paper" :class="{'start':playing,'start pause':!playing}"  :style="'background-image: url('+music[0].al.picUrl+')'">
 	 	<span id="">
 	 		
 	 	</span>
@@ -15,20 +15,20 @@
 		<div class="jindu">
 				<span id="music-bar">
 					<span id="load-bar"></span>
-					<span id="played-bar"></span>
+					<span ref="playBar" id="played-bar"></span>
 				</span>
 				<div id="time">
 					<span id="current-time">0:00</span>
-					<span id="total-time">{{totalTime}}</span>
+					<span id="total-time">{{format(music[0].dt)}}</span>
 				</div>
 			</div>
 			<div class="controls">
 				<a id="xunhuan" href="javascript:;">循环</a>
-				<a id="play" @click="playMusic()" href="javascript:;">Play</a>
+				<a id="play" @click="playMusic()" href="javascript:;">{{state}}</a>
 				<a id="jingyin" href="javascript:;">静音</a>
 			</div>
 	</div>
-	<audio id="audio" autoplay="autoplay" controls="controls">
+	<audio style="display: none;" id="audio" autoplay="autoplay" controls="controls" ref="audio">
 			<source :title="music.name" :data-img="music[0].al.picUrl" :src="musicUrl.data[0].url">
 		</audio>
 </div>
@@ -40,15 +40,16 @@
 		name:'play',
 		data(){
 			return{
-				totalTime:0,
+				state:"play",
+				totalTime:this.$refs.audio,
 				playing:true,
 				music:[],
 				musicurl:[]
 			}
 		},
+		
 		mounted() {	
       this.loadData();
-      this.loadUrl();
       this.playMusic()
     },
 		methods:{
@@ -60,7 +61,7 @@
                 .then((response) => {
                     // success
                      this.music = response.data.songs
-//                 	console.log(response.data.songs[0].al.picUrl)
+                   	console.log(response.data.songs[0].dt)
                     return this.music
                 })
                 .catch((error) => {
@@ -71,7 +72,7 @@
                 .then((response) => {
                     // success
                      this.musicUrl = response.data
-                   	console.log(response.data.data[0].url)
+//                 	console.log(response.data.data[0].url)
                     return this.musicUrl
                 })
                 .catch((error) => {
@@ -79,20 +80,36 @@
                     console.log(error);
                 })
    	},
-   	loadUrl(){
-   		
-   	},
+   	format(interval){
+   let time = parseFloat(interval) /1000;  
+    if (null!= time &&""!= time) {  
+        if (time >60&& time <60*60) {  
+            time = parseInt(time /60.0) +":"+ parseInt((parseFloat(time /60.0) -  
+            parseInt(time /60.0)) *60);  
+        }else if (time >=60*60&& time <60*60*24) {  
+            time = parseInt(time /3600.0) +":"+ parseInt((parseFloat(time /3600.0) -  
+            parseInt(time /3600.0)) *60) +":"+  
+            parseInt((parseFloat((parseFloat(time /3600.0) - parseInt(time /3600.0)) *60) -  
+            parseInt((parseFloat(time /3600.0) - parseInt(time /3600.0)) *60)) *60);  
+        }else {  
+            time = parseInt(time);  
+        }  
+    }else{  
+        time = "0:0:0";  
+    }  
+    return `${time}`;  
+},
    	playMusic(){
-   		var  audio=document.getElementById("audio")
-		this.totalTime=(audio.duration)/60;
+   		var  audio=this.$refs.audio;
+   		var precent=(audio.currentTime/audio.duration*100).toFixed(2)
+   		var playBar=this.$refs.playBar;
+   		playBar.style.width=`${precent}%`
    		if(this.playing){
    			audio.pause()
-   			return this.playing=false,this.totalTime;
+   			return this.playing=false,this.state="pause";
    		}else{
-   			audio.play()
-   		
-   			console.log()
-   			return this.playing=true,this.totalTime;
+   			audio.play();
+   			return this.playing=true,this.state="play";
    		}
    	}
 	}
@@ -183,32 +200,27 @@
      	 text-shadow: 0px 0px 3px #ddd;
 	}
 	.control{
+		position: absolute;
+		bottom:10px;
 		margin-top: 5px;
-		height: 25%;
+		height: auto;
 		width: 100%;
 		/*box-shadow:-5px 8px 11px 4px  #000000;*/
 		background-color: rgba(255,255,255,0);
 	}
+	
 	.jindu {
 	padding-top: 5px;
 	height: 25px;
 }
 #music-bar {
 	display: inline-block;
-	width: 218px;
+	width: 70%;
 	height: 4px;
 	background: #6d6d6d;
 	margin-right: 7px;
 	border-radius: 4px;
 	margin-left: 5px;
-	position: relative;
-}
-#voice-bar {
-	display: inline-block;
-	width: 80px;
-	height: 4px;
-	background: #6d6d6d;
-	border-radius: 4px;
 	position: relative;
 }
 #played-bar, #voiced-bar {
@@ -221,6 +233,8 @@
     position: absolute;
     z-index: 2;
     transition: all 0.5s;
+    position: absolute;
+    left: 0;
 }
 #played-bar:after, #voiced-bar:after {
 	content: '';
@@ -243,10 +257,13 @@
 	transition: all 3s; /* 进度加载动画 */
 }
 #time {
-    width: 216px;
+    width: 70%;
 	font-size: 12px;
     overflow: hidden;
     padding: 3px 0 0 6px;
+    margin-left: 14%;
+		margin-right: 5%;
+		padding-left: 0;
 }
 #time span:nth-child(1) {
 	float: left;
@@ -298,13 +315,15 @@
 		width: 70%;
 		margin-left: 5%;
 		margin-right: 5%;
+		position: relative;
 	}
-	#voice-bar {
-		width: 15%;
+	#load-bar,#played-bar{
+		position: absolute;
+		left: 0;
 	}
 	#time {
 		width: 70%;
-		margin-left: 5%;
+		margin-left: 14%;
 		margin-right: 5%;
 		padding-left: 0;
 	}
@@ -315,9 +334,14 @@
 	    width: 100%;
 	}
 }
+
 .start{
 	animation:loadRotate 13s linear infinite;
 	-webkit-animation:loadRotate 13s linear infinite;
+}
+.start.pause{
+animation-play-state:paused;
+-webkit-animation-play-state:paused; /* Safari 和 Chrome */
 }
 @-webkit-keyframes loadRotate{
   from{
